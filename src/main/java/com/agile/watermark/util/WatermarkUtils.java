@@ -70,8 +70,8 @@ public class WatermarkUtils {
      * @author lihaitao
      * @since 2020/7/3
      */
-    public static void setWatermarkForPDF(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new PDFWatermarkCreatorImpl()) {
+    public static void setWatermarkForPdf(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
+        try (WatermarkCreator watermarkCreator = new PdfWatermarkCreatorImpl()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }
@@ -92,4 +92,3 @@ public class WatermarkUtils {
     }
 
 }
-
