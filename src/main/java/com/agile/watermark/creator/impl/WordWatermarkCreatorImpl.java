@@ -177,7 +177,7 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取文字位置水印的样式
+     * 获取固定位置的文字水印样式
      *
      * @param textWatermark 文字水印
      * @param index         水印索引
@@ -196,7 +196,7 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取文字重复水印的样式
+     * 获取重复的文字水印的样式
      *
      * @param textWatermark 文字水印
      * @param rowIndex      行号

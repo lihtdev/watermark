@@ -1,14 +1,12 @@
 package com.agile.watermark.util;
 
-import com.agile.watermark.creator.impl.PPTWatermarkCreatorImpl;
 import com.agile.watermark.creator.WatermarkCreator;
-import com.agile.watermark.creator.impl.ExcelWatermarkCreatorImpl;
-import com.agile.watermark.creator.impl.PdfWatermarkCreatorImpl;
-import com.agile.watermark.creator.impl.PictureWatermarkCreatorImpl;
-import com.agile.watermark.creator.impl.WordWatermarkCreatorImpl;
-import com.agile.watermark.model.*;
+import com.agile.watermark.creator.impl.*;
+import com.agile.watermark.model.Watermark;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * 水印工具类
@@ -91,22 +89,6 @@ public class WatermarkUtils {
         try (WatermarkCreator watermarkCreator = new PictureWatermarkCreatorImpl()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        TextWatermark watermark = new TextWatermark();
-        watermark.setText("禁止复制");
-//        watermark.setFontFamily("");
-//        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-//        watermarkStyle.setYStart(-80);
-        PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
-        watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{PositionWatermarkStyle.Position.LEFT_BOTTOM,
-                PositionWatermarkStyle.Position.LEFT_TOP, PositionWatermarkStyle.Position.RIGHT_BOTTOM,
-        PositionWatermarkStyle.Position.RIGHT_TOP, PositionWatermarkStyle.Position.CENTER});
-        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
-        watermark.setStyle(watermarkStyle);
-        String filepath = "/Users/lihaitao/temp/watermark/";
-        WatermarkUtils.setWatermarkForWord(new FileInputStream(filepath + "/file.docx"), new FileOutputStream(filepath + "/watermark.docx"), watermark);
     }
 
 }
