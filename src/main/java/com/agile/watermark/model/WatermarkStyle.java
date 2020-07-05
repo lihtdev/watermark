@@ -19,7 +19,7 @@ public abstract class WatermarkStyle {
     /**
      * 不透明度（范围 0~1: 0-完全透明，1-完全不透明）
      */
-    private double opacity = 0.5;
+    private float opacity = 0.5f;
 
     /**
      * 水印版式

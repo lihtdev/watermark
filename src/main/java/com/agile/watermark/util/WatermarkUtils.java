@@ -6,9 +6,7 @@ import com.agile.watermark.creator.impl.ExcelWatermarkCreatorImpl;
 import com.agile.watermark.creator.impl.PdfWatermarkCreatorImpl;
 import com.agile.watermark.creator.impl.PictureWatermarkCreatorImpl;
 import com.agile.watermark.creator.impl.WordWatermarkCreatorImpl;
-import com.agile.watermark.model.RepeatWatermarkStyle;
-import com.agile.watermark.model.TextWatermark;
-import com.agile.watermark.model.Watermark;
+import com.agile.watermark.model.*;
 
 import java.io.*;
 
@@ -98,8 +96,14 @@ public class WatermarkUtils {
     public static void main(String[] args) throws IOException {
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
-        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-        watermarkStyle.setYStart(-80);
+//        watermark.setFontFamily("");
+//        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+//        watermarkStyle.setYStart(-80);
+        PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+        watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{PositionWatermarkStyle.Position.LEFT_BOTTOM,
+                PositionWatermarkStyle.Position.LEFT_TOP, PositionWatermarkStyle.Position.RIGHT_BOTTOM,
+        PositionWatermarkStyle.Position.RIGHT_TOP, PositionWatermarkStyle.Position.CENTER});
+        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
         watermark.setStyle(watermarkStyle);
         String filepath = "/Users/lihaitao/temp/watermark/";
         WatermarkUtils.setWatermarkForWord(new FileInputStream(filepath + "/file.docx"), new FileOutputStream(filepath + "/watermark.docx"), watermark);
