@@ -18,7 +18,7 @@ import java.io.OutputStream;
  * @author lihaitao
  * @since 2020/7/5
  */
-public class PdfWatermarkCreatorImpl implements WatermarkCreator {
+public class PDFWatermarkCreatorImpl implements WatermarkCreator {
 
     private InputStream inputStream;
 
