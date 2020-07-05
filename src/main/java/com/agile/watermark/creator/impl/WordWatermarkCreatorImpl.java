@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 给 Word 文档添加水印的实现类
- * 只支持 .docx 文件，暂不支持 .doc 文件
- * 图片水印暂不支持重复
+ * 给 Word 文档添加水印
+ * 1.只支持 .docx 文件，暂不支持 .doc 文件
+ * 2.图片水印暂不支持重复
  *
  * @author lihaitao
  * @since 2020/7/4
