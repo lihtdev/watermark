@@ -24,11 +24,21 @@ public class RepeatWatermarkStyle extends WatermarkStyle {
     /**
      * 横向间距（单位：px）
      */
-    private int xSpace = 100;
+    private int xSpace = 160;
 
     /**
      * 纵向间距（单位：px）
      */
-    private int ySpace = 200;
+    private int ySpace = 160;
+
+    /**
+     * 水印起始位置X轴坐标
+     */
+    private int xStart = 0;
+
+    /**
+     * 水印起始位置Y轴坐标
+     */
+    private int yStart = 0;
 
 }

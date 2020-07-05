@@ -14,18 +14,96 @@ import java.io.InputStream;
 public class ImageWatermark extends Watermark {
 
     /**
-     * 宽度
+     * 宽度（单位：px）
      */
-    private int width;
+    private int width = 300;
 
     /**
-     * 高度
+     * 高度（单位：px）
      */
-    private int height;
+    private int height = 200;
 
     /**
      * 图片输入流
      */
     private InputStream imageStream;
+
+    /**
+     * 图片格式（默认为 jpeg 格式）
+     */
+    private Format format = Format.JPEG;
+
+    /**
+     * 不允许调用无参构造方法
+     */
+    private ImageWatermark() {
+    }
+
+    public ImageWatermark(InputStream imageStream) {
+        this.imageStream = imageStream;
+    }
+
+    /**
+     * 图片格式枚举类
+     *
+     * @author lihaitao
+     * @since 2020/7/3
+     */
+    public enum Format {
+        /**
+         * Extended windows meta file
+         */
+        EMF,
+
+        /**
+         * Windows Meta File
+         */
+        WMF,
+
+        /**
+         * Mac PICT format
+         */
+        PICT,
+
+        /**
+         * JPEG format
+         */
+        JPEG,
+
+        /**
+         * PNG format
+         */
+        PNG,
+
+        /**
+         * Device independent bitmap
+         */
+        DIB,
+
+        /**
+         * GIF image format
+         */
+        GIF,
+
+        /**
+         * Tag Image File (.tiff)
+         */
+        TIFF,
+
+        /**
+         * Encapsulated Postscript (.eps)
+         */
+        EPS,
+
+        /**
+         * Windows Bitmap (.bmp)
+         */
+        BMP,
+
+        /**
+         * WordPerfect graphics (.wpg)
+         */
+        WPG;
+    }
 
 }

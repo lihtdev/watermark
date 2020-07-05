@@ -23,6 +23,9 @@ public abstract class WatermarkStyle {
 
     /**
      * 水印版式
+     *
+     * @author lihaitao
+     * @since 2020/7/3
      */
     public enum Format {
         /**
@@ -39,7 +42,7 @@ public abstract class WatermarkStyle {
         OBLIQUE(-45);
 
         /**
-         * 倾斜度
+         * 旋转度
          */
         private int rotation;
 

@@ -18,6 +18,9 @@ public class PositionWatermarkStyle extends WatermarkStyle {
 
     /**
      * 水印位置枚举
+     *
+     * @author lihaitao
+     * @since 2020/7/3
      */
     public enum Position {
 
@@ -61,10 +64,16 @@ public class PositionWatermarkStyle extends WatermarkStyle {
             this.vertical = vertical;
         }
 
+        /**
+         * 水平位置
+         */
         public String getHorizontal() {
             return this.horizontal;
         }
 
+        /**
+         * 垂直位置
+         */
         public String getVertical() {
             return this.vertical;
         }
