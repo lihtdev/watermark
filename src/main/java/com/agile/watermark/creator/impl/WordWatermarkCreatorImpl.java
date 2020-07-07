@@ -190,8 +190,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
         style.append(";margin-top:").append(0);
         style.append(";margin-left:").append(0);
         PositionWatermarkStyle positionWatermarkStyle = (PositionWatermarkStyle) textWatermark.getStyle();
-        style.append(";mso-position-vertical:").append(positionWatermarkStyle.getPositions()[index].getVertical());
-        style.append(";mso-position-horizontal:").append(positionWatermarkStyle.getPositions()[index].getHorizontal());
+        style.append(";mso-position-vertical").append(positionWatermarkStyle.getPositions()[index].getVertical());
+        style.append(";mso-position-horizontal").append(positionWatermarkStyle.getPositions()[index].getHorizontal());
         return style.toString();
     }
 
@@ -264,18 +264,7 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
             // Create the drawing entry for it
             CTDrawing drawing = ctr.addNewDrawing();
             CTAnchor anchor = drawing.addNewAnchor();
-
-            // Do the fiddly namespace bits on the inline
-            // (We need full control of what goes where and as what)
-            String xml =
-                    "<a:graphic xmlns:a=\"" + CTGraphicalObject.type.getName().getNamespaceURI() + "\">" +
-                            "<a:graphicData uri=\"" + org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture.type.getName().getNamespaceURI() + "\">" +
-                            "<pic:pic xmlns:pic=\"" + org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture.type.getName().getNamespaceURI() + "\" />" +
-                            "</a:graphicData>" +
-                            "</a:graphic>";
-            InputSource is = new InputSource(new StringReader(xml));
-            org.w3c.dom.Document document = DocumentHelper.readDocument(is);
-            anchor.set(XmlToken.Factory.parse(document.getDocumentElement(), POIXMLTypeLoader.DEFAULT_XML_OPTIONS));
+            addNewGraphic(anchor);
 
             // Setup the anchor
             anchor.setDistT(0);
@@ -287,12 +276,12 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
             anchor.setLayoutInCell(true);
             anchor.setLocked(false);
 
-            CTPosH ctPosH = anchor.addNewPositionH();
-            ctPosH.setRelativeFrom(STRelFromH.MARGIN);
-            ctPosH.setAlign(STAlignH.CENTER);
-            CTPosV ctPosV = anchor.addNewPositionV();
-            ctPosV.setRelativeFrom(STRelFromV.MARGIN);
-            ctPosV.setAlign(STAlignV.CENTER);
+            CTPosH posH = anchor.addNewPositionH();
+            posH.setRelativeFrom(STRelFromH.MARGIN);
+            posH.setAlign(STAlignH.CENTER);
+            CTPosV posV = anchor.addNewPositionV();
+            posV.setRelativeFrom(STRelFromV.MARGIN);
+            posV.setAlign(STAlignV.CENTER);
 
             CTNonVisualDrawingProps docPr = anchor.addNewDocPr();
             long id = paragraph.getDocument().getNextPicNameNumber(pictureType);
@@ -346,13 +335,36 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
             ext.setCx(cx);
             ext.setCy(cy);
 
-            CTPresetGeometry2D prstGeom = spPr.addNewPrstGeom();
-            prstGeom.setPrst(STShapeType.RECT);
-            prstGeom.addNewAvLst();
-        } catch (SAXException | XmlException e) {
-            throw new WatermarkException("给Word文件添加图片水印时发生错误：" + e.getMessage(), e);
+            CTPresetGeometry2D presetGeometry2D = spPr.addNewPrstGeom();
+            presetGeometry2D.setPrst(STShapeType.RECT);
+            presetGeometry2D.addNewAvLst();
         } catch (InvalidFormatException e) {
             throw new WatermarkException("水印图片类型错误：" + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 给 <wp:anchor></wp:anchor> 节点下添加 <a:graphic></a:graphic> 节点
+     *
+     * @param anchor <wp:anchor></wp:anchor> 节点
+     * @author lihaitao
+     * @since 2020/7/5
+     */
+    private void addNewGraphic(CTAnchor anchor) throws IOException {
+        // Do the fiddly namespace bits on the inline
+        // (We need full control of what goes where and as what)
+        String xml =
+                "<a:graphic xmlns:a=\"" + CTGraphicalObject.type.getName().getNamespaceURI() + "\">" +
+                        "<a:graphicData uri=\"" + org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture.type.getName().getNamespaceURI() + "\">" +
+                        "<pic:pic xmlns:pic=\"" + org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture.type.getName().getNamespaceURI() + "\" />" +
+                        "</a:graphicData>" +
+                        "</a:graphic>";
+        InputSource is = new InputSource(new StringReader(xml));
+        try {
+            org.w3c.dom.Document document = DocumentHelper.readDocument(is);
+            anchor.set(XmlToken.Factory.parse(document.getDocumentElement(), POIXMLTypeLoader.DEFAULT_XML_OPTIONS));
+        } catch (SAXException | XmlException e) {
+            throw new WatermarkException("给Word文件添加图片水印时发生错误：" + e.getMessage(), e);
         }
     }
 

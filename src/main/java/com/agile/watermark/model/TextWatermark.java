@@ -31,4 +31,44 @@ public class TextWatermark extends Watermark {
      */
     private int fontSize = 20;
 
+    /**
+     * 设置颜色代码（如：black, red, #d0d0d0）
+     */
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    /**
+     * 设置颜色名称
+     */
+    public void setColor(Color color) {
+        this.color = color.toString();
+    }
+
+    /**
+     * 颜色
+     *
+     * @author lihaitao
+     * @since 2020/7/7
+     */
+    public enum Color {
+        WHITE,
+        LIGHT_GRAY,
+        GRAY,
+        DARK_GRAY,
+        BLACK,
+        RED,
+        PINK,
+        ORANGE,
+        YELLOW,
+        GREEN,
+        MAGENTA,
+        CYAN,
+        BLUE;
+
+        /*public String getName() {
+
+        }*/
+    }
+
 }
