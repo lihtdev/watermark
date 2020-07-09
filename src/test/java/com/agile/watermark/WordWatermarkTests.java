@@ -53,7 +53,7 @@ public class WordWatermarkTests {
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
         watermark.setFontFamily("楷体");
-        watermark.setColor("green");
+        watermark.setColor("blue");
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/word.docx");

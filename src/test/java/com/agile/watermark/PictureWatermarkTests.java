@@ -32,7 +32,8 @@ public class PictureWatermarkTests {
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
         watermark.setFontFamily("楷体");
-        watermark.setColor("red");
+        watermark.setFontSize(100);
+        watermark.setColor(TextWatermark.Color.RED);
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
@@ -49,16 +50,18 @@ public class PictureWatermarkTests {
         RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
         watermarkStyle.setYStart(-80);
         watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+        watermarkStyle.setOpacity(0.8f);
 
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
         watermark.setFontFamily("楷体");
-        watermark.setColor("green");
+        watermark.setFontSize(50);
+        watermark.setColor(TextWatermark.Color.GREEN);
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
              OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
-            WatermarkUtils.setWatermarkForWord(inputStream, outputStream, watermark);
+            WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }
 
     }
@@ -78,15 +81,6 @@ public class PictureWatermarkTests {
 
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }
-    }
-
-    public static void main(String[] args) {
-//        Color red = Color.decode("red");
-//        System.out.println(red);
-        Color gray = Color.decode("#d0d0d0");
-        System.out.println(gray);
-        Color black = Color.decode("#000000");
-        System.out.println(black);
     }
 
 }

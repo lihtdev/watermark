@@ -190,8 +190,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
         style.append(";margin-top:").append(0);
         style.append(";margin-left:").append(0);
         PositionWatermarkStyle positionWatermarkStyle = (PositionWatermarkStyle) textWatermark.getStyle();
-        style.append(";mso-position-vertical").append(positionWatermarkStyle.getPositions()[index].getVertical());
-        style.append(";mso-position-horizontal").append(positionWatermarkStyle.getPositions()[index].getHorizontal());
+        style.append(";mso-position-vertical:").append(positionWatermarkStyle.getPositions()[index].getVertical());
+        style.append(";mso-position-horizontal:").append(positionWatermarkStyle.getPositions()[index].getHorizontal());
         return style.toString();
     }
 

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>图片水印旋转原理</title>
+    <style type="text/css">
+        .page {
+            position: fixed;
+            top: 200px;
+            left: 300px;
+            width: 500px;
+            height: 300px;
+            border: 1px dashed #000;
+            transform:rotate(-36deg);
+            -ms-transform:rotate(-36deg); 	/* IE 9 */
+            -moz-transform:rotate(-36deg); 	/* Firefox */
+            -webkit-transform:rotate(-36deg); /* Safari 和 Chrome */
+            -o-transform:rotate(-36deg); 	/* Opera */
+        }
+        .watermark-layer {
+            position: fixed;
+            top: 200px;
+            left: 300px;
+            width: 500px;
+            height: 300px;
+            z-index: 9999;
+        }
+        .watermark {
+            display: inline-block;
+            width: 64px;
+            height: 23px;
+            color: gray;
+            opacity: 0.5;
+            position: absolute;
+        }
+        .watermark.left-top {
+            left: 20px;
+            top: 20px;
+        }
+        .watermark.left-bottom {
+            left: 20px;
+            bottom: 20px;
+        }
+        .watermark.right-top {
+            right: 20px;
+            top: 20px;
+        }
+        .watermark.right-bottom {
+            right: 20px;
+            bottom: 20px;
+        }
+        .watermark.center {
+            left: 218px;
+            top: 139px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page"></div>
+    <div class="watermark-layer">
+        <div class="watermark left-top">禁止复制</div>
+        <div class="watermark left-bottom">禁止复制</div>
+        <div class="watermark right-top">禁止复制</div>
+        <div class="watermark right-bottom">禁止复制</div>
+        <div class="watermark center">禁止复制</div>
+    </div>
+</body>
+</html>

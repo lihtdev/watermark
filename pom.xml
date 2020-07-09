@@ -8,31 +8,36 @@
     <artifactId>watermark</artifactId>
     <version>1.0</version>
 
+    <properties>
+        <itext.version>7.1.11</itext.version>
+        <poi.version>4.1.2</poi.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-scratchpad</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-examples</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -53,7 +58,7 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext7-core</artifactId>
-            <version>7.1.11</version>
+            <version>${itext.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
