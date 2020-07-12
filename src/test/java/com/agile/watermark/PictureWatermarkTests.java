@@ -4,7 +4,6 @@ import com.agile.watermark.model.*;
 import com.agile.watermark.util.WatermarkUtils;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.io.*;
 
 /**
@@ -15,7 +14,7 @@ import java.io.*;
  */
 public class PictureWatermarkTests {
 
-    private static final String BASE_PATH = "c:/temp/watermark/";
+    private static final String BASE_PATH = "/Users/lihaitao/temp/watermark/";
 
     /**
      * 添加固定位置的文本水印
@@ -48,7 +47,6 @@ public class PictureWatermarkTests {
     @Test
     public void testSetRepeatTextWatermark() throws IOException {
         RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-        watermarkStyle.setYStart(-80);
         watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
         watermarkStyle.setOpacity(0.8f);
 
@@ -67,17 +65,47 @@ public class PictureWatermarkTests {
     }
 
     /**
-     * 添加图片水印
+     * 添加固定位置的图片水印
      */
     @Test
-    public void testSetImageWatermark() throws IOException {
+    public void testSetPositionImageWatermark() throws IOException {
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
              OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
 
+            PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+            watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{
+                    PositionWatermarkStyle.Position.LEFT_BOTTOM, PositionWatermarkStyle.Position.LEFT_TOP,
+                    PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
+                    PositionWatermarkStyle.Position.CENTER});
+            watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(300);
             watermark.setHeight(200);
+            watermark.setStyle(watermarkStyle);
+
+            WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
+        }
+    }
+
+    /**
+     * 添加重复的图片水印
+     */
+    @Test
+    public void testSetRepeatImageWatermark() throws IOException {
+        try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
+             InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+
+            RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+            watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+            watermarkStyle.setOpacity(0.8f);
+
+            ImageWatermark watermark = new ImageWatermark(imageStream);
+            watermark.setWidth(200);
+            watermark.setHeight(100);
+            watermark.setStyle(watermarkStyle);
 
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }

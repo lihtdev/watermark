@@ -1,5 +1,6 @@
 package com.agile.watermark.model;
 
+import com.agile.watermark.util.ColorUtils;
 import lombok.Data;
 
 /**
@@ -43,6 +44,20 @@ public class TextWatermark extends Watermark {
      */
     public void setColor(Color color) {
         this.color = color.toString().toLowerCase();
+    }
+
+    /**
+     * 获取颜色代码
+     */
+    public String getColor() {
+        return this.color;
+    }
+
+    /**
+     * 获取 java.awt.Color 颜色对象
+     */
+    public java.awt.Color getAwtColor() {
+        return ColorUtils.getColor(this.color);
     }
 
     /**

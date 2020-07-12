@@ -14,7 +14,7 @@ import java.io.*;
  */
 public class PdfWatermarkTests {
 
-    private static final String BASE_PATH = "c:/temp/watermark/";
+    private static final String BASE_PATH = "/Users/lihaitao/temp/watermark/";
 
     /**
      * 添加固定位置的文本水印

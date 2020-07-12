@@ -57,7 +57,6 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
      */
     private static final int CONTRAST = -70001;
 
-
     private InputStream inputStream;
 
     private InputStream imageStream;
