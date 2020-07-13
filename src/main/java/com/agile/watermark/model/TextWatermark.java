@@ -1,5 +1,6 @@
 package com.agile.watermark.model;
 
+import com.agile.watermark.enums.ChineseFont;
 import com.agile.watermark.util.ColorUtils;
 import lombok.Data;
 
@@ -44,6 +45,24 @@ public class TextWatermark extends Watermark {
      */
     public void setColor(Color color) {
         this.color = color.toString().toLowerCase();
+    }
+
+    /**
+     * 设置字体
+     *
+     * @param chineseFont 中文字体
+     */
+    public void setFontFamily(ChineseFont chineseFont) {
+        this.fontFamily = chineseFont.getFontName();
+    }
+
+    /**
+     * 设置字体
+     *
+     * @param fontFamily 字体名称
+     */
+    public void setFontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
     }
 
     /**

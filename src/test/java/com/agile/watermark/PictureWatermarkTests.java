@@ -1,5 +1,6 @@
 package com.agile.watermark;
 
+import com.agile.watermark.enums.ChineseFont;
 import com.agile.watermark.model.*;
 import com.agile.watermark.util.WatermarkUtils;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import java.io.*;
  */
 public class PictureWatermarkTests {
 
-    private static final String BASE_PATH = "/Users/lihaitao/temp/watermark/";
+    private static final String BASE_PATH = "c:/temp/watermark/";
 
     /**
      * 添加固定位置的文本水印
@@ -52,7 +53,7 @@ public class PictureWatermarkTests {
 
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
-        watermark.setFontFamily("楷体");
+        watermark.setFontFamily(ChineseFont.ALIBABA_PU_HUI_TI);
         watermark.setFontSize(50);
         watermark.setColor(TextWatermark.Color.GREEN);
         watermark.setStyle(watermarkStyle);

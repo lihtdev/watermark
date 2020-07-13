@@ -14,7 +14,8 @@ public enum ChineseFont {
     FANG_SONG("仿宋", "simfang.ttf", false),
     HEI_TI("黑体", "simhei.ttf", false),
     KAI_TI("楷体", "simkai.ttf", false),
-    MS_YA_HEI("微软雅黑", "msyh.ttc", true);
+    MS_YA_HEI("微软雅黑", "msyh.ttc", true),
+    ALIBABA_PU_HUI_TI("阿里巴巴普惠体", "AlibabaPuHuiTiMedium.ttf", false);
 
     ChineseFont(String fontName, String fileName, boolean isTtc) {
         this.fontName = fontName;
