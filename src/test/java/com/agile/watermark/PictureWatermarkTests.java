@@ -29,7 +29,7 @@ public class PictureWatermarkTests {
         watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
 
         TextWatermark watermark = new TextWatermark();
-        watermark.setText("禁止复制");
+        watermark.setText("禁止watermark复制");
         watermark.setFontFamily("楷体");
         watermark.setFontSize(100);
         watermark.setColor(TextWatermark.Color.RED);
@@ -51,7 +51,7 @@ public class PictureWatermarkTests {
         watermarkStyle.setOpacity(0.8f);
 
         TextWatermark watermark = new TextWatermark();
-        watermark.setText("禁止复制");
+        watermark.setText("禁止watermark复制");
         watermark.setFontFamily("楷体");
         watermark.setFontSize(50);
         watermark.setColor(TextWatermark.Color.GREEN);
@@ -81,8 +81,8 @@ public class PictureWatermarkTests {
             watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
-            watermark.setWidth(300);
-            watermark.setHeight(200);
+            watermark.setWidth(430);
+            watermark.setHeight(138);
             watermark.setStyle(watermarkStyle);
 
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
@@ -100,7 +100,7 @@ public class PictureWatermarkTests {
 
             RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
             watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
-            watermarkStyle.setOpacity(0.8f);
+            watermarkStyle.setOpacity(0.5f);
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(200);
