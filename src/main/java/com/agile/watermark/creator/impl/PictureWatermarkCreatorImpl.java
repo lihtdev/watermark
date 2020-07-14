@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * 给图片添加水印
+ * 给图片添加水印（固定位置水印暂不支持斜式）
  *
  * @author lihaitao
  * @since 2020/7/5
