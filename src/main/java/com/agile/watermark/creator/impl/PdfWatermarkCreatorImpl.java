@@ -17,6 +17,7 @@ import com.itextpdf.kernel.pdf.extgstate.PdfExtGState;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
 
 import javax.imageio.ImageIO;
@@ -36,7 +37,7 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
     /**
      * 固定位置水印边距
      */
-    private static final int POSITION_WATERMARK_PADDING = 100;
+    private static final int POSITION_WATERMARK_PADDING = 20;
 
     private InputStream inputStream;
 
@@ -67,33 +68,30 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         Paragraph paragraph = new Paragraph(textWatermark.getText()).setFont(font)
                 .setFontColor(deviceRgb, textWatermark.getStyle().getOpacity())
                 .setFontSize(textWatermark.getFontSize());
+
+        int[] watermarkWidthAndHeight = getTextWatermarkWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
+        float watermarkWidth = watermarkWidthAndHeight[0];
+        float watermarkHeight = watermarkWidthAndHeight[1];
+
         // transparency
         PdfExtGState extGState = new PdfExtGState();
         extGState.setFillOpacity(textWatermark.getStyle().getOpacity());
-        double radians = Math.toRadians(-textWatermark.getStyle().getFormat().getRotation());
         // loop over every page
         // Implement transformation matrix usage in order to scale image
-        for (int i = 1; i <= pages; i++) {
-            PdfPage pdfPage = pdfDoc.getPage(i);
+        for (int pageNumber = 1; pageNumber <= pages; pageNumber++) {
+            PdfPage pdfPage = pdfDoc.getPage(pageNumber);
             Rectangle pageSize = pdfPage.getPageSize();
-            float width = pageSize.getLeft() + pageSize.getRight();
-            float height = pageSize.getTop() + pageSize.getBottom();
-            float x = (pageSize.getLeft() + pageSize.getRight()) / 2;
-            float y = (pageSize.getTop() + pageSize.getBottom()) / 2;
+            float pageWidth = pageSize.getLeft() + pageSize.getRight();
+            float pageHeight = pageSize.getTop() + pageSize.getBottom();
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
-            // 左上
-            doc.showTextAligned(paragraph, 0, height, i, TextAlignment.LEFT, VerticalAlignment.TOP, (float) radians);
-            // 左下
-            doc.showTextAligned(paragraph, 0, 0, i, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
-            // 居中
-            doc.showTextAligned(paragraph, x, y, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, (float) radians);
-            // 右上
-            doc.showTextAligned(paragraph, width, height, i, TextAlignment.RIGHT, VerticalAlignment.TOP, (float) radians);
-            // 右下
-            doc.showTextAligned(paragraph, width, 0, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, (float) radians);
-
+            WatermarkStyle watermarkStyle = textWatermark.getStyle();
+            if (watermarkStyle instanceof PositionWatermarkStyle) {
+                createPositionTextWatermark(paragraph, (PositionWatermarkStyle) watermarkStyle, pageNumber, pageWidth, pageHeight);
+            } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
+                createRepeatTextWatermark(paragraph, (RepeatWatermarkStyle) watermarkStyle, pageNumber, watermarkWidth, watermarkHeight);
+            }
             over.restoreState();
         }
     }
@@ -129,25 +127,88 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
-    /*private void createPositionWatermark(Paragraph watermarkParagraph, PositionWatermarkStyle positionWatermarkStyle,
-                                          float pageWidth, float pageHeight) {
-        double radians = Math.toRadians(-positionWatermarkStyle.getFormat().getRotation());
+    /**
+     * 添加固定位置的文本水印（固定位置的水印只支持水平板式，不支持斜式和垂直）
+     *
+     * @param watermarkParagraph 水印段落
+     * @param positionWatermarkStyle 固定位置水印样式
+     * @param pageNumber 页码
+     * @param pageWidth 页面宽度
+     * @param pageHeight 页面高度
+     */
+    private void createPositionTextWatermark(Paragraph watermarkParagraph, PositionWatermarkStyle positionWatermarkStyle,
+                                             int pageNumber, float pageWidth, float pageHeight) {
         for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
             switch (position) {
-                case LEFT_TOP:
-                    float x = 0 + POSITION_WATERMARK_PADDING;
-                    doc.showTextAligned(paragraph, 0, height, i, TextAlignment.LEFT, VerticalAlignment.TOP, (float) radians);
+                case LEFT_TOP: {
+                    float x = POSITION_WATERMARK_PADDING;
+                    float y = pageHeight - POSITION_WATERMARK_PADDING;
+                    doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.LEFT, VerticalAlignment.TOP, 0);
+                    break;
+                }
+                case LEFT_BOTTOM: {
+                    float x = POSITION_WATERMARK_PADDING;
+                    float y = POSITION_WATERMARK_PADDING;
+                    doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.LEFT, VerticalAlignment.BOTTOM, 0);
+                    break;
+                }
+                case RIGHT_TOP: {
+                    float x = pageWidth - POSITION_WATERMARK_PADDING;
+                    float y = pageHeight - POSITION_WATERMARK_PADDING;
+                    doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.RIGHT, VerticalAlignment.TOP, 0);
+                    break;
+                }
+                case RIGHT_BOTTOM: {
+                    float x = pageWidth - POSITION_WATERMARK_PADDING;
+                    float y = POSITION_WATERMARK_PADDING;
+                    doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, 0);
+                    break;
+                }
+                default: {
+                    // CENTER
+                    float x = pageWidth / 2;
+                    float y = pageHeight / 2;
+                    doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
+                }
             }
         }
-        // 左下
-        doc.showTextAligned(paragraph, 0, 0, i, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
-        // 居中
-        doc.showTextAligned(paragraph, x, y, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, (float) radians);
-        // 右上
-        doc.showTextAligned(paragraph, width, height, i, TextAlignment.RIGHT, VerticalAlignment.TOP, (float) radians);
-        // 右下
-        doc.showTextAligned(paragraph, width, 0, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, (float) radians);
-    }*/
+    }
+
+    private void createRepeatTextWatermark(Paragraph watermarkParagraph, RepeatWatermarkStyle repeatWatermarkStyle,
+                                           int pageNumber, float watermarkWidth, float watermarkHeight) {
+        double radians = Math.toRadians(-repeatWatermarkStyle.getFormat().getRotation());
+        for (int row = 0; row < repeatWatermarkStyle.getRows(); row++) {
+            for (int col = 0; col < repeatWatermarkStyle.getCols(); col++) {
+                float x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * col;
+                float y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * row;
+                doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
+            }
+        }
+    }
+
+    /**
+     * 获取文字水印的宽度和高度
+     * 中文字符的宽高比例为 1:1，英文字符的宽高比例为 1:
+     * 一个中文字符占3个字节，一个英文字符占1个字节
+     *
+     * @param fontSize 字体大小
+     * @param text     水印文本
+     * @author lihaitao
+     * @since 2020/07/14
+     */
+    private int[] getTextWatermarkWidthAndHeight(int fontSize, String text) {
+        int length = text.length();
+        for (int i = 0; i < text.length(); i++) {
+            String s = String.valueOf(text.charAt(i));
+            if (s.getBytes().length > 1) {
+                length++;
+            }
+        }
+        length = length % 2 == 0 ? length / 2 : length / 2 + 1;
+        int watermarkWidth = fontSize * length;
+        int watermarkHeight = fontSize;
+        return new int[]{watermarkWidth, watermarkHeight};
+    }
 
     @Override
     public void close() throws IOException {

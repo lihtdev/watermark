@@ -14,7 +14,7 @@ import java.io.*;
  */
 public class PdfWatermarkTests {
 
-    private static final String BASE_PATH = "c:/temp/watermark/";
+    private static final String BASE_PATH = "/Users/lihaitao/temp/watermark/";
 
     /**
      * 添加固定位置的文本水印
@@ -27,7 +27,7 @@ public class PdfWatermarkTests {
                 PositionWatermarkStyle.Position.LEFT_BOTTOM, PositionWatermarkStyle.Position.LEFT_TOP,
                 PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
                 PositionWatermarkStyle.Position.CENTER});
-        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+        watermarkStyle.setFormat(WatermarkStyle.Format.VERTICAL);
 
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
