@@ -78,7 +78,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
         if (watermarkStyle instanceof PositionWatermarkStyle) {
             PositionWatermarkStyle positionWatermarkStyle = (PositionWatermarkStyle) watermarkStyle;
             for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
-                int[] coordinates = getPositionTextCoordinate(position, srcImageWidth, srcImageHeight, watermarkWidth, watermarkHeight);
+                int[] coordinates = getPositionTextWatermarkCoordinate(position, srcImageWidth, srcImageHeight, watermarkWidth, watermarkHeight);
                 g.drawString(textWatermark.getText(), coordinates[0], coordinates[1]);
             }
         } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
@@ -86,7 +86,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
             RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) watermarkStyle;
             for (int rowIndex = -5; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
                 for (int colIndex = -5; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
-                    int[] coordinates = getRepeatTextCoordinate(repeatWatermarkStyle, watermarkWidth, watermarkHeight, rowIndex, colIndex);
+                    int[] coordinates = getRepeatTextWatermarkCoordinate(repeatWatermarkStyle, watermarkWidth, watermarkHeight, rowIndex, colIndex);
                     g.drawString(textWatermark.getText(), coordinates[0], coordinates[1]);
                 }
             }
@@ -130,7 +130,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
         if (watermarkStyle instanceof PositionWatermarkStyle) {
             PositionWatermarkStyle positionWatermarkStyle = (PositionWatermarkStyle) watermarkStyle;
             for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
-                int[] coordinates = getPositionImageCoordinate(position, srcImageWidth, srcImageHeight, watermarkWidth, watermarkHeight);
+                int[] coordinates = getPositionImageWatermarkCoordinate(position, srcImageWidth, srcImageHeight, watermarkWidth, watermarkHeight);
                 g.drawImage(watermarkScaledInstance, coordinates[0], coordinates[1], null);
             }
         } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
@@ -138,7 +138,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
             RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) watermarkStyle;
             for (int rowIndex = -5; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
                 for (int colIndex = -5; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
-                    int[] coordinates = getRepeatImageCoordinate(repeatWatermarkStyle, watermarkWidth, watermarkHeight, rowIndex, colIndex);
+                    int[] coordinates = getRepeatImageWatermarkCoordinate(repeatWatermarkStyle, watermarkWidth, watermarkHeight, rowIndex, colIndex);
                     g.drawImage(watermarkScaledInstance, coordinates[0], coordinates[1], null);
                 }
             }
@@ -158,8 +158,9 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      * @author lihaitao
      * @since 2020/07/13
      */
-    private int[] getPositionTextCoordinate(PositionWatermarkStyle.Position position,
-                                            int srcImageWidth, int srcImageHeight, int watermarkWidth, int watermarkHeight) {
+    private int[] getPositionTextWatermarkCoordinate(PositionWatermarkStyle.Position position,
+                                                     int srcImageWidth, int srcImageHeight,
+                                                     int watermarkWidth, int watermarkHeight) {
         int padding = 100;
         int x, y;
         switch (position) {
@@ -198,8 +199,9 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      * @author lihaitao
      * @since 2020/07/13
      */
-    private int[] getPositionImageCoordinate(PositionWatermarkStyle.Position position,
-                                             int srcImageWidth, int srcImageHeight, int watermarkWidth, int watermarkHeight) {
+    private int[] getPositionImageWatermarkCoordinate(PositionWatermarkStyle.Position position,
+                                                      int srcImageWidth, int srcImageHeight,
+                                                      int watermarkWidth, int watermarkHeight) {
         int padding = 100;
         int x, y;
         switch (position) {
@@ -238,8 +240,8 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      * @author lihaitao
      * @since 2020/07/13
      */
-    private int[] getRepeatTextCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
-                                          int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
+    private int[] getRepeatTextWatermarkCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
+                                                   int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
         int xSpace = repeatWatermarkStyle.getXSpace();
         int ySpace = repeatWatermarkStyle.getYSpace();
         int x = (watermarkWidth + xSpace) * colIndex;
@@ -258,8 +260,8 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      * @author lihaitao
      * @since 2020/07/13
      */
-    private int[] getRepeatImageCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
-                                           int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
+    private int[] getRepeatImageWatermarkCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
+                                                    int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
         int xSpace = repeatWatermarkStyle.getXSpace();
         int ySpace = repeatWatermarkStyle.getYSpace();
         int x = (watermarkWidth + xSpace) * colIndex;

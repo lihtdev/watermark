@@ -45,7 +45,6 @@ public class ExcelWatermarkTests {
     @Test
     public void testSetRepeatTextWatermark() throws IOException {
         RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-        watermarkStyle.setYStart(-80);
         watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
 
         TextWatermark watermark = new TextWatermark();

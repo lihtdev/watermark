@@ -28,14 +28,17 @@ public abstract class WatermarkStyle {
      * @since 2020/7/3
      */
     public enum Format {
+
         /**
          * 水平
          */
         HORIZONTAL(0),
+
         /**
          * 垂直
          */
         VERTICAL(-90),
+
         /**
          * 斜式
          */

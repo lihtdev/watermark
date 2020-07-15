@@ -95,9 +95,9 @@ public class PictureWatermarkTests {
      */
     @Test
     public void testSetRepeatImageWatermark() throws IOException {
-        try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
-             InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+        try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.jpg");
+             InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.jpg");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.jpg")) {
 
             RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
             watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);

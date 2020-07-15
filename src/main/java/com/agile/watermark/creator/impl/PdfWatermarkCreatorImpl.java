@@ -1,9 +1,7 @@
 package com.agile.watermark.creator.impl;
 
 import com.agile.watermark.creator.WatermarkCreator;
-import com.agile.watermark.model.ImageWatermark;
-import com.agile.watermark.model.TextWatermark;
-import com.agile.watermark.model.Watermark;
+import com.agile.watermark.model.*;
 import com.agile.watermark.util.FontUtils;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -34,6 +32,11 @@ import java.io.OutputStream;
  * @since 2020/7/5
  */
 public class PdfWatermarkCreatorImpl implements WatermarkCreator {
+
+    /**
+     * 固定位置水印边距
+     */
+    private static final int POSITION_WATERMARK_PADDING = 100;
 
     private InputStream inputStream;
 
@@ -67,17 +70,30 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         // transparency
         PdfExtGState extGState = new PdfExtGState();
         extGState.setFillOpacity(textWatermark.getStyle().getOpacity());
+        double radians = Math.toRadians(-textWatermark.getStyle().getFormat().getRotation());
         // loop over every page
         // Implement transformation matrix usage in order to scale image
         for (int i = 1; i <= pages; i++) {
             PdfPage pdfPage = pdfDoc.getPage(i);
             Rectangle pageSize = pdfPage.getPageSize();
+            float width = pageSize.getLeft() + pageSize.getRight();
+            float height = pageSize.getTop() + pageSize.getBottom();
             float x = (pageSize.getLeft() + pageSize.getRight()) / 2;
             float y = (pageSize.getTop() + pageSize.getBottom()) / 2;
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
-            doc.showTextAligned(paragraph, x, y, i, TextAlignment.CENTER, VerticalAlignment.TOP, 0);
+            // 左上
+            doc.showTextAligned(paragraph, 0, height, i, TextAlignment.LEFT, VerticalAlignment.TOP, (float) radians);
+            // 左下
+            doc.showTextAligned(paragraph, 0, 0, i, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
+            // 居中
+            doc.showTextAligned(paragraph, x, y, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, (float) radians);
+            // 右上
+            doc.showTextAligned(paragraph, width, height, i, TextAlignment.RIGHT, VerticalAlignment.TOP, (float) radians);
+            // 右下
+            doc.showTextAligned(paragraph, width, 0, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, (float) radians);
+
             over.restoreState();
         }
     }
@@ -91,6 +107,7 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         // image watermark
         Image watermarkImage = ImageIO.read(imageStream);
         ImageData watermarkImageData = ImageDataFactory.create(watermarkImage, null);
+        watermarkImageData.setRotation(imageWatermark.getStyle().getFormat().getRotation());
         //  Implement transformation matrix usage in order to scale image
         float width = watermarkImageData.getWidth();
         float height = watermarkImageData.getHeight();
@@ -111,6 +128,26 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
             over.restoreState();
         }
     }
+
+    /*private void createPositionWatermark(Paragraph watermarkParagraph, PositionWatermarkStyle positionWatermarkStyle,
+                                          float pageWidth, float pageHeight) {
+        double radians = Math.toRadians(-positionWatermarkStyle.getFormat().getRotation());
+        for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
+            switch (position) {
+                case LEFT_TOP:
+                    float x = 0 + POSITION_WATERMARK_PADDING;
+                    doc.showTextAligned(paragraph, 0, height, i, TextAlignment.LEFT, VerticalAlignment.TOP, (float) radians);
+            }
+        }
+        // 左下
+        doc.showTextAligned(paragraph, 0, 0, i, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
+        // 居中
+        doc.showTextAligned(paragraph, x, y, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, (float) radians);
+        // 右上
+        doc.showTextAligned(paragraph, width, height, i, TextAlignment.RIGHT, VerticalAlignment.TOP, (float) radians);
+        // 右下
+        doc.showTextAligned(paragraph, width, 0, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, (float) radians);
+    }*/
 
     @Override
     public void close() throws IOException {

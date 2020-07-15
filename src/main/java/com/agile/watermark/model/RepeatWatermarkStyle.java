@@ -31,14 +31,4 @@ public class RepeatWatermarkStyle extends WatermarkStyle {
      */
     private int ySpace = 160;
 
-    /**
-     * 水印起始位置X轴坐标
-     */
-    private int xStart = 0;
-
-    /**
-     * 水印起始位置Y轴坐标
-     */
-    private int yStart = 0;
-
 }

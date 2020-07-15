@@ -31,10 +31,12 @@ public class ImageWatermark extends Watermark {
     /**
      * 图片格式（默认为 jpeg 格式）
      */
-    private Format format = Format.JPEG;
+    private Type type = Type.JPEG;
 
     /**
      * 不允许调用无参构造方法
+     *
+     * @see #ImageWatermark(InputStream imageStream)
      */
     private ImageWatermark() {
     }
@@ -49,7 +51,7 @@ public class ImageWatermark extends Watermark {
      * @author lihaitao
      * @since 2020/7/3
      */
-    public enum Format {
+    public enum Type {
         /**
          * Extended windows meta file
          */

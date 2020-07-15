@@ -97,8 +97,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
         WatermarkStyle watermarkStyle = textWatermark.getStyle();
         if (watermarkStyle instanceof RepeatWatermarkStyle) {
             RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) watermarkStyle;
-            for (int rowIndex = 0; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
-                for (int colIndex = 0; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
+            for (int rowIndex = -5; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
+                for (int colIndex = -5; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
                     int index = rowIndex * repeatWatermarkStyle.getCols() + colIndex;
                     createTextWatermark(textWatermark, getRepeatTextWatermarkStyle(textWatermark, rowIndex, colIndex), index);
                 }
@@ -113,6 +113,7 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
 
     /**
      * 设置图片水印
+     * TODO 实现固定位置和重复的图片水印
      *
      * @param imageWatermark 图片水印
      * @author lihaitao
@@ -152,6 +153,10 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
         shape.setStyle(style);
         shape.setFillcolor(textWatermark.getColor());
         shape.setStroked(STTrueFalse.FALSE); // 字体设置为实心
+        CTFill fill = shape.addNewFill();
+        fill.setOn(STTrueFalse.T);
+        fill.setOpacity(Units.doubleToFixedPoint(textWatermark.getStyle().getOpacity()) + "f");
+        fill.setFocussize("0,0");
         CTTextPath shapeTextPath = shape.addNewTextpath();
         shapeTextPath.setStyle("font-family:" + textWatermark.getFontFamily() + ";font-size:" + textWatermark.getFontSize() + "pt");
         shapeTextPath.setString(textWatermark.getText());
@@ -176,7 +181,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取固定位置的文字水印样式
+     * 获取固定位置的文本水印样式
+     * TODO 固定位置的文本水印增加外边距
      *
      * @param textWatermark 文字水印
      * @param index         水印索引
@@ -206,8 +212,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     private String getRepeatTextWatermarkStyle(TextWatermark textWatermark, int rowIndex, int colIndex) {
         StringBuilder style = getTextWatermarkStyle(textWatermark);
         RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) textWatermark.getStyle();
-        int marginTop = repeatWatermarkStyle.getYSpace() * rowIndex + repeatWatermarkStyle.getYStart();
-        int marginLeft = repeatWatermarkStyle.getXSpace() * colIndex + repeatWatermarkStyle.getXStart();
+        int marginTop = repeatWatermarkStyle.getYSpace() * rowIndex;
+        int marginLeft = repeatWatermarkStyle.getXSpace() * colIndex;
         // 设置水印的间隔，这是一个大坑，不能用 top, left 必须要 margin-top, margin-left
         style.append(";margin-left:").append(marginLeft).append("px");
         style.append(";margin-top:").append(marginTop).append("px");
@@ -401,7 +407,7 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
      * @since 2020-07-05
      */
     private int getPictureType(ImageWatermark imageWatermark) {
-        switch (imageWatermark.getFormat()) {
+        switch (imageWatermark.getType()) {
             case EMF:
                 return Document.PICTURE_TYPE_EMF;
             case WMF:
@@ -447,4 +453,5 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
         }
         // outputStream 不需要关闭，因添加水印后要返回给调用者
     }
+
 }

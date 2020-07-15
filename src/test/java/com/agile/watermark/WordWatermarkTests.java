@@ -28,6 +28,7 @@ public class WordWatermarkTests {
                 PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
                 PositionWatermarkStyle.Position.CENTER});
         watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+        watermarkStyle.setOpacity(0.5f);
 
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
@@ -47,13 +48,13 @@ public class WordWatermarkTests {
     @Test
     public void testSetRepeatTextWatermark() throws IOException {
         RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-        watermarkStyle.setYStart(-80);
         watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+        watermarkStyle.setOpacity(0.3f);
 
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
         watermark.setFontFamily("楷体");
-        watermark.setColor("blue");
+        watermark.setColor(TextWatermark.Color.RED);
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/word.docx");
