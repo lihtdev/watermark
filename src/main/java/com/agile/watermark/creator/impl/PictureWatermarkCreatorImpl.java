@@ -3,6 +3,7 @@ package com.agile.watermark.creator.impl;
 import com.agile.watermark.creator.WatermarkCreator;
 import com.agile.watermark.model.*;
 import com.agile.watermark.util.FontUtils;
+import com.agile.watermark.util.TextUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -60,7 +61,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
         BufferedImage srcBufferedImage = new BufferedImage(srcImageWidth, srcImageHeight,
                 BufferedImage.TYPE_INT_RGB);
 
-        int[] watermarkWidthAndHeight = getTextWatermarkWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
+        int[] watermarkWidthAndHeight = TextUtils.getTextWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
         int watermarkWidth = watermarkWidthAndHeight[0];
         int watermarkHeight = watermarkWidthAndHeight[1];
 
@@ -73,7 +74,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
         g.setFont(FontUtils.getFont(textWatermark.getFontFamily(), Font.BOLD, textWatermark.getFontSize()));
 
         WatermarkStyle watermarkStyle = textWatermark.getStyle();
-        double radians = Math.toRadians(watermarkStyle.getFormat().getRotation());
+        double rotation = Math.toRadians(watermarkStyle.getFormat().getRotation());
 
         if (watermarkStyle instanceof PositionWatermarkStyle) {
             PositionWatermarkStyle positionWatermarkStyle = (PositionWatermarkStyle) watermarkStyle;
@@ -82,7 +83,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
                 g.drawString(textWatermark.getText(), coordinates[0], coordinates[1]);
             }
         } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
-            g.rotate(radians, srcImageWidth / 2.0, srcImageHeight / 2.0);
+            g.rotate(rotation, srcImageWidth / 2.0, srcImageHeight / 2.0);
             RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) watermarkStyle;
             for (int rowIndex = -5; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
                 for (int colIndex = -5; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
@@ -123,7 +124,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, imageWatermark.getStyle().getOpacity()));
 
         WatermarkStyle watermarkStyle = imageWatermark.getStyle();
-        double radians = Math.toRadians(watermarkStyle.getFormat().getRotation());
+        double rotation = Math.toRadians(watermarkStyle.getFormat().getRotation());
 
         Image watermarkScaledInstance = watermarkImage.getScaledInstance(watermarkWidth, watermarkHeight, Image.SCALE_SMOOTH);
 
@@ -134,7 +135,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
                 g.drawImage(watermarkScaledInstance, coordinates[0], coordinates[1], null);
             }
         } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
-            g.rotate(radians, srcImageWidth / 2.0, srcImageHeight / 2.0);
+            g.rotate(rotation, srcImageWidth / 2.0, srcImageHeight / 2.0);
             RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) watermarkStyle;
             for (int rowIndex = -5; rowIndex < repeatWatermarkStyle.getRows(); rowIndex++) {
                 for (int colIndex = -5; colIndex < repeatWatermarkStyle.getCols(); colIndex++) {
@@ -148,7 +149,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取固定位置文字水印 x, y 坐标（原点在文字水印左边和下边的交点）
+     * 获取固定位置文字水印 x, y 坐标（背景图的原点在左上角，文字水印的原点在左下角）
      *
      * @param position        位置
      * @param srcImageWidth   原图片宽度
@@ -189,7 +190,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取固定位置图片水印 x, y 坐标（原点在图片水印左边和上边的交点）
+     * 获取固定位置图片水印 x, y 坐标（背景图的原点在左上角，图片水印的原点在左上角）
      *
      * @param position        位置
      * @param srcImageWidth   原图片宽度
@@ -230,7 +231,7 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
     }
 
     /**
-     * 获取重复文字水印 x, y 坐标（原点在文字水印左边和下边的交点）
+     * 获取重复文字水印 x, y 坐标（背景图的原点在左上角，文字水印的原点在左下角）
      *
      * @param repeatWatermarkStyle 重复水印
      * @param watermarkWidth       水印宽度
@@ -242,15 +243,13 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      */
     private int[] getRepeatTextWatermarkCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
                                                    int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
-        int xSpace = repeatWatermarkStyle.getXSpace();
-        int ySpace = repeatWatermarkStyle.getYSpace();
-        int x = (watermarkWidth + xSpace) * colIndex;
-        int y = (watermarkHeight + ySpace) * rowIndex + watermarkHeight;
+        int x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * colIndex + repeatWatermarkStyle.getXStart();
+        int y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * rowIndex + watermarkHeight + repeatWatermarkStyle.getYStart();
         return new int[]{x, y};
     }
 
     /**
-     * 获取重复图片水印 x, y 坐标（原点在图片水印左边和上边的交点）
+     * 获取重复图片水印 x, y 坐标（背景图的原点在左上角，图片水印的原点在左上角）
      *
      * @param repeatWatermarkStyle 重复水印
      * @param watermarkWidth       水印宽度
@@ -262,35 +261,9 @@ public class PictureWatermarkCreatorImpl implements WatermarkCreator {
      */
     private int[] getRepeatImageWatermarkCoordinate(RepeatWatermarkStyle repeatWatermarkStyle,
                                                     int watermarkWidth, int watermarkHeight, int rowIndex, int colIndex) {
-        int xSpace = repeatWatermarkStyle.getXSpace();
-        int ySpace = repeatWatermarkStyle.getYSpace();
-        int x = (watermarkWidth + xSpace) * colIndex;
-        int y = (watermarkHeight + ySpace) * rowIndex;
+        int x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * colIndex + repeatWatermarkStyle.getXStart();
+        int y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * rowIndex + watermarkHeight + repeatWatermarkStyle.getYStart();
         return new int[]{x, y};
-    }
-
-    /**
-     * 获取文字水印的宽度和高度
-     * 中文字符的宽高比例为 1:1，英文字符的宽高比例为 1:
-     * 一个中文字符占3个字节，一个英文字符占1个字节
-     *
-     * @param fontSize 字体大小
-     * @param text     水印文本
-     * @author lihaitao
-     * @since 2020/07/14
-     */
-    private int[] getTextWatermarkWidthAndHeight(int fontSize, String text) {
-        int length = text.length();
-        for (int i = 0; i < text.length(); i++) {
-            String s = String.valueOf(text.charAt(i));
-            if (s.getBytes().length > 1) {
-                length++;
-            }
-        }
-        length = length % 2 == 0 ? length / 2 : length / 2 + 1;
-        int watermarkWidth = fontSize * length;
-        int watermarkHeight = fontSize;
-        return new int[]{watermarkWidth, watermarkHeight};
     }
 
     @Override

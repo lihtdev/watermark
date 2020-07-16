@@ -3,10 +3,12 @@ package com.agile.watermark.creator.impl;
 import com.agile.watermark.creator.WatermarkCreator;
 import com.agile.watermark.model.*;
 import com.agile.watermark.util.FontUtils;
+import com.agile.watermark.util.TextUtils;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.geom.AffineTransform;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
@@ -17,7 +19,6 @@ import com.itextpdf.kernel.pdf.extgstate.PdfExtGState;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
 
 import javax.imageio.ImageIO;
@@ -69,13 +70,14 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
                 .setFontColor(deviceRgb, textWatermark.getStyle().getOpacity())
                 .setFontSize(textWatermark.getFontSize());
 
-        int[] watermarkWidthAndHeight = getTextWatermarkWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
+        int[] watermarkWidthAndHeight = TextUtils.getTextWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
         float watermarkWidth = watermarkWidthAndHeight[0];
         float watermarkHeight = watermarkWidthAndHeight[1];
 
         // transparency
         PdfExtGState extGState = new PdfExtGState();
         extGState.setFillOpacity(textWatermark.getStyle().getOpacity());
+        double rotation = Math.toRadians(-textWatermark.getStyle().getFormat().getRotation());
         // loop over every page
         // Implement transformation matrix usage in order to scale image
         for (int pageNumber = 1; pageNumber <= pages; pageNumber++) {
@@ -86,6 +88,7 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
+            over.concatMatrix(AffineTransform.getRotateInstance(rotation));
             WatermarkStyle watermarkStyle = textWatermark.getStyle();
             if (watermarkStyle instanceof PositionWatermarkStyle) {
                 createPositionTextWatermark(paragraph, (PositionWatermarkStyle) watermarkStyle, pageNumber, pageWidth, pageHeight);
@@ -105,24 +108,31 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         // image watermark
         Image watermarkImage = ImageIO.read(imageStream);
         ImageData watermarkImageData = ImageDataFactory.create(watermarkImage, null);
-        watermarkImageData.setRotation(imageWatermark.getStyle().getFormat().getRotation());
         //  Implement transformation matrix usage in order to scale image
-        float width = watermarkImageData.getWidth();
-        float height = watermarkImageData.getHeight();
+        float watermarkWidth = watermarkImageData.getWidth();
+        float watermarkHeight = watermarkImageData.getHeight();
         // transparency
         PdfExtGState extGState = new PdfExtGState();
         extGState.setFillOpacity(imageWatermark.getStyle().getOpacity());
+        double rotation = Math.toRadians(-imageWatermark.getStyle().getFormat().getRotation());
         // loop over every page
         // Implement transformation matrix usage in order to scale image
         for (int i = 1; i <= pages; i++) {
             PdfPage pdfPage = pdfDoc.getPage(i);
             Rectangle pageSize = pdfPage.getPageSize();
-            float x = (pageSize.getLeft() + pageSize.getRight()) / 2;
-            float y = (pageSize.getTop() + pageSize.getBottom()) / 2;
+            float pageWidth = pageSize.getLeft() + pageSize.getRight();
+            float pageHeight = pageSize.getTop() + pageSize.getBottom();
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
-            over.addImage(watermarkImageData, width, 0, 0, height, x - (width / 2), y - (height / 2), true);
+            over.concatMatrix(AffineTransform.getRotateInstance(rotation));
+
+            WatermarkStyle watermarkStyle = imageWatermark.getStyle();
+            if (watermarkStyle instanceof PositionWatermarkStyle) {
+                createPositionImageWatermark(over, watermarkImageData, (PositionWatermarkStyle) watermarkStyle, pageWidth, pageHeight, watermarkWidth, watermarkHeight);
+            } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
+                createRepeatImageWatermark(over, watermarkImageData, (RepeatWatermarkStyle) watermarkStyle, watermarkWidth, watermarkHeight);
+            }
             over.restoreState();
         }
     }
@@ -130,11 +140,11 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
     /**
      * 添加固定位置的文本水印（固定位置的水印只支持水平板式，不支持斜式和垂直）
      *
-     * @param watermarkParagraph 水印段落
+     * @param watermarkParagraph     水印段落
      * @param positionWatermarkStyle 固定位置水印样式
-     * @param pageNumber 页码
-     * @param pageWidth 页面宽度
-     * @param pageHeight 页面高度
+     * @param pageNumber             页码
+     * @param pageWidth              页面宽度
+     * @param pageHeight             页面高度
      */
     private void createPositionTextWatermark(Paragraph watermarkParagraph, PositionWatermarkStyle positionWatermarkStyle,
                                              int pageNumber, float pageWidth, float pageHeight) {
@@ -176,38 +186,56 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
 
     private void createRepeatTextWatermark(Paragraph watermarkParagraph, RepeatWatermarkStyle repeatWatermarkStyle,
                                            int pageNumber, float watermarkWidth, float watermarkHeight) {
-        double radians = Math.toRadians(-repeatWatermarkStyle.getFormat().getRotation());
-        for (int row = 0; row < repeatWatermarkStyle.getRows(); row++) {
-            for (int col = 0; col < repeatWatermarkStyle.getCols(); col++) {
-                float x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * col;
-                float y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * row;
-                doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.LEFT, VerticalAlignment.BOTTOM, (float) radians);
+        for (int row = -3; row < repeatWatermarkStyle.getRows(); row++) {
+            for (int col = -3; col < repeatWatermarkStyle.getCols(); col++) {
+                float x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * col + repeatWatermarkStyle.getXStart();
+                float y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * row + repeatWatermarkStyle.getYStart();
+                doc.showTextAligned(watermarkParagraph, x, y, pageNumber, TextAlignment.LEFT, VerticalAlignment.BOTTOM, 0);
             }
         }
     }
 
-    /**
-     * 获取文字水印的宽度和高度
-     * 中文字符的宽高比例为 1:1，英文字符的宽高比例为 1:
-     * 一个中文字符占3个字节，一个英文字符占1个字节
-     *
-     * @param fontSize 字体大小
-     * @param text     水印文本
-     * @author lihaitao
-     * @since 2020/07/14
-     */
-    private int[] getTextWatermarkWidthAndHeight(int fontSize, String text) {
-        int length = text.length();
-        for (int i = 0; i < text.length(); i++) {
-            String s = String.valueOf(text.charAt(i));
-            if (s.getBytes().length > 1) {
-                length++;
+    // pdf文档的原点在左下角，图片水印的原点在左下角
+    private void createPositionImageWatermark(PdfCanvas over, ImageData watermarkImageData, PositionWatermarkStyle positionWatermarkStyle,
+                                              float pageWidth, float pageHeight, float watermarkWidth, float watermarkHeight) {
+        for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
+            float x, y;
+            switch (position) {
+                case LEFT_TOP:
+                    x = POSITION_WATERMARK_PADDING;
+                    y = pageHeight - watermarkHeight - POSITION_WATERMARK_PADDING;
+                    break;
+                case LEFT_BOTTOM:
+                    x = POSITION_WATERMARK_PADDING;
+                    y = POSITION_WATERMARK_PADDING;
+                    break;
+                case RIGHT_TOP:
+                    x = pageWidth - watermarkWidth - POSITION_WATERMARK_PADDING;
+                    y = pageHeight - watermarkHeight - POSITION_WATERMARK_PADDING;
+                    break;
+                case RIGHT_BOTTOM:
+                    x = pageWidth - watermarkWidth - POSITION_WATERMARK_PADDING;
+                    y = POSITION_WATERMARK_PADDING;
+                    break;
+                default:
+                    // CENTER
+                    x = (pageWidth - watermarkWidth) / 2;
+                    y = (pageHeight - watermarkHeight) / 2;
+            }
+            over.addImage(watermarkImageData, watermarkWidth, 0, 0, watermarkHeight, x, y, true);
+        }
+    }
+
+    // pdf文档的原点在左下角，图片水印的原点在左下角
+    private void createRepeatImageWatermark(PdfCanvas over, ImageData watermarkImageData, RepeatWatermarkStyle repeatWatermarkStyle,
+                                            float watermarkWidth, float watermarkHeight) {
+        for (int row = -3; row < repeatWatermarkStyle.getRows(); row++) {
+            for (int col = -3; col < repeatWatermarkStyle.getCols(); col++) {
+                float x = (watermarkWidth + repeatWatermarkStyle.getXSpace()) * col + repeatWatermarkStyle.getXStart();
+                float y = (watermarkHeight + repeatWatermarkStyle.getYSpace()) * row + repeatWatermarkStyle.getYStart();
+                over.addImage(watermarkImageData, watermarkWidth, 0, 0, watermarkHeight, x, y, true);
             }
         }
-        length = length % 2 == 0 ? length / 2 : length / 2 + 1;
-        int watermarkWidth = fontSize * length;
-        int watermarkHeight = fontSize;
-        return new int[]{watermarkWidth, watermarkHeight};
     }
 
     @Override
@@ -223,4 +251,5 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
         // outputStream 不需要关闭，因添加水印后要返回给调用者
     }
+
 }

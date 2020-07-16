@@ -3,6 +3,7 @@ package com.agile.watermark.creator.impl;
 import com.agile.watermark.creator.WatermarkCreator;
 import com.agile.watermark.exception.WatermarkException;
 import com.agile.watermark.model.*;
+import com.agile.watermark.util.TextUtils;
 import com.microsoft.schemas.office.office.CTLock;
 import com.microsoft.schemas.vml.*;
 import org.apache.poi.ooxml.POIXMLException;
@@ -212,8 +213,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     private String getRepeatTextWatermarkStyle(TextWatermark textWatermark, int rowIndex, int colIndex) {
         StringBuilder style = getTextWatermarkStyle(textWatermark);
         RepeatWatermarkStyle repeatWatermarkStyle = (RepeatWatermarkStyle) textWatermark.getStyle();
-        int marginTop = repeatWatermarkStyle.getYSpace() * rowIndex;
-        int marginLeft = repeatWatermarkStyle.getXSpace() * colIndex;
+        int marginTop = repeatWatermarkStyle.getYSpace() * rowIndex + repeatWatermarkStyle.getYStart();
+        int marginLeft = repeatWatermarkStyle.getXSpace() * colIndex + repeatWatermarkStyle.getXStart();
         // 设置水印的间隔，这是一个大坑，不能用 top, left 必须要 margin-top, margin-left
         style.append(";margin-left:").append(marginLeft).append("px");
         style.append(";margin-top:").append(marginTop).append("px");
@@ -230,9 +231,9 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
     private StringBuilder getTextWatermarkStyle(TextWatermark textWatermark) {
         StringBuilder style = new StringBuilder();
         style.append("position:absolute");
-        // 计算文本占用的长度（文本总个数 * 单字长度）
-        style.append(";width:").append(textWatermark.getText().length() * textWatermark.getFontSize()).append("pt");
-        style.append(";height:").append(textWatermark.getFontSize()).append("pt");
+        int[] textWidthAndHeight = TextUtils.getTextWidthAndHeight(textWatermark.getFontSize(), textWatermark.getText());
+        style.append(";width:").append(textWidthAndHeight[0]).append("pt");
+        style.append(";height:").append(textWidthAndHeight[1]).append("pt");
         style.append(";z-index:-251654144");
         style.append(";mso-wrap-edited:f");
         style.append(";mso-position-horizontal-relative:").append("page");
