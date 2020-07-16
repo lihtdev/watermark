@@ -3,11 +3,9 @@ package com.agile.watermark.creator.impl;
 import com.agile.watermark.creator.WatermarkCreator;
 import com.agile.watermark.exception.WatermarkException;
 import com.agile.watermark.model.*;
-import com.agile.watermark.util.QRCodeUtils;
 import com.agile.watermark.util.TextUtils;
 import com.microsoft.schemas.office.office.CTLock;
 import com.microsoft.schemas.vml.*;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.poi.ooxml.POIXMLException;
 import org.apache.poi.ooxml.POIXMLTypeLoader;
 import org.apache.poi.ooxml.util.DocumentHelper;
@@ -28,7 +26,10 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +82,6 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
             setTextWatermark((TextWatermark) watermark);
         } else if (watermark instanceof ImageWatermark) {
             setImageWatermark((ImageWatermark) watermark);
-        } else if (watermark instanceof QRCodeWatermark) {
-            setQRCodeWatermark((QRCodeWatermark) watermark);
         }
 
         doc.write(outputStream);
@@ -123,24 +122,6 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
      */
     private void setImageWatermark(ImageWatermark imageWatermark) throws IOException {
         createImageWatermark(imageWatermark);
-    }
-
-    /**
-     * 设置
-     *
-     * @param qrCodeWatermark
-     * @throws IOException
-     */
-    private void setQRCodeWatermark(QRCodeWatermark qrCodeWatermark) throws IOException {
-        try (ByteArrayOutputStream qrCodeOutputStream = new ByteArrayOutputStream()) {
-            QRCodeUtils.encode(qrCodeWatermark.getContent(), qrCodeWatermark.getWidth(), qrCodeWatermark.getHeight(), qrCodeOutputStream);
-            ImageWatermark imageWatermark = new ImageWatermark(new ByteArrayInputStream(qrCodeOutputStream.toByteArray()));
-            imageWatermark.setStyle(qrCodeWatermark.getStyle());
-            imageWatermark.setWidth(qrCodeWatermark.getWidth());
-            imageWatermark.setHeight(qrCodeWatermark.getHeight());
-            imageWatermark.setType(ImageWatermark.Type.PNG);
-            setImageWatermark(imageWatermark);
-        }
     }
 
     /**

@@ -15,7 +15,7 @@ import java.io.*;
  */
 public class PictureWatermarkTests {
 
-    private static final String BASE_PATH = "c:/temp/watermark/";
+    private static final String BASE_PATH = "/Users/lihaitao/temp/watermark/";
 
     /**
      * 添加固定位置的文本水印
@@ -106,6 +106,21 @@ public class PictureWatermarkTests {
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(200);
             watermark.setHeight(100);
+            watermark.setStyle(watermarkStyle);
+
+            WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
+        }
+    }
+
+    @Test
+    public void testSetQRCodeWatermark() throws IOException {
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+
+            PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+            watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+
+            QRCodeWatermark watermark = new QRCodeWatermark("我是中国人");
             watermark.setStyle(watermarkStyle);
 
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
