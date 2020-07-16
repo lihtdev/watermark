@@ -29,9 +29,9 @@ public class ImageWatermark extends Watermark {
     private InputStream imageStream;
 
     /**
-     * 图片格式（默认为 jpeg 格式）
+     * 图片格式（默认为 png 格式）
      */
-    private Type type = Type.JPEG;
+    private Type type = Type.PNG;
 
     /**
      * 不允许调用无参构造方法
