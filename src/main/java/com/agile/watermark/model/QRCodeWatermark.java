@@ -17,13 +17,16 @@ public class QRCodeWatermark extends Watermark {
     private String content;
 
     /**
-     * 宽度（单位：px）
+     * 宽度
      */
     private int width = 300;
 
     /**
-     * 高度（单位：px）
+     * 高度
      */
     private int height = 300;
 
+    public QRCodeWatermark(String content) {
+        this.content = content;
+    }
 }

@@ -48,6 +48,15 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
 
     private Document doc;
 
+    /**
+     * 给 PDF 文件添加水印
+     *
+     * @param inputStream  文件输入流
+     * @param outputStream 添加水印后的文件输出流
+     * @param watermark    水印
+     * @author lihaitao
+     * @since 2020/07/16
+     */
     @Override
     public void create(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
         this.inputStream = inputStream;
@@ -60,6 +69,13 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
+    /**
+     * 设置文本水印
+     *
+     * @param textWatermark 文本水印
+     * @author lihaitao
+     * @since 2020/07/16
+     */
     private void setTextWatermark(TextWatermark textWatermark) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(inputStream), new PdfWriter(outputStream));
         this.doc = new Document(pdfDoc);
@@ -99,6 +115,13 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
+    /**
+     * 设置图片水印
+     *
+     * @param imageWatermark 图片水印
+     * @author lihaitao
+     * @since 2020/07/16
+     */
     private void setImageWatermark(ImageWatermark imageWatermark) throws IOException {
         this.imageStream = imageWatermark.getImageStream();
 
@@ -125,12 +148,13 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
-            over.concatMatrix(AffineTransform.getRotateInstance(rotation));
 
             WatermarkStyle watermarkStyle = imageWatermark.getStyle();
             if (watermarkStyle instanceof PositionWatermarkStyle) {
                 createPositionImageWatermark(over, watermarkImageData, (PositionWatermarkStyle) watermarkStyle, pageWidth, pageHeight, watermarkWidth, watermarkHeight);
             } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
+                // 设置旋转度
+                over.concatMatrix(AffineTransform.getRotateInstance(rotation));
                 createRepeatImageWatermark(over, watermarkImageData, (RepeatWatermarkStyle) watermarkStyle, watermarkWidth, watermarkHeight);
             }
             over.restoreState();
@@ -145,6 +169,8 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
      * @param pageNumber             页码
      * @param pageWidth              页面宽度
      * @param pageHeight             页面高度
+     * @author lihaitao
+     * @date 2020/7/16
      */
     private void createPositionTextWatermark(Paragraph watermarkParagraph, PositionWatermarkStyle positionWatermarkStyle,
                                              int pageNumber, float pageWidth, float pageHeight) {
@@ -184,6 +210,17 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
+    /**
+     * 添加重复的文本水印
+     *
+     * @param watermarkParagraph   水印段落
+     * @param repeatWatermarkStyle 重复水印样式
+     * @param pageNumber           页码
+     * @param watermarkWidth       水印宽度
+     * @param watermarkHeight      水印高度
+     * @author lihaitao
+     * @date 2020/7/16
+     */
     private void createRepeatTextWatermark(Paragraph watermarkParagraph, RepeatWatermarkStyle repeatWatermarkStyle,
                                            int pageNumber, float watermarkWidth, float watermarkHeight) {
         for (int row = -3; row < repeatWatermarkStyle.getRows(); row++) {
@@ -195,7 +232,19 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
-    // pdf文档的原点在左下角，图片水印的原点在左下角
+    /**
+     * 添加固定位置的图片水印（PDF文档的原点在左下角，图片水印的原点在左下角）
+     *
+     * @param over                   水印画布
+     * @param watermarkImageData     水印图片
+     * @param positionWatermarkStyle 固定位置水印样式
+     * @param pageWidth              页面宽度
+     * @param pageHeight             页面高度
+     * @param watermarkWidth         水印宽度
+     * @param watermarkHeight        水印高度
+     * @author lihaitao
+     * @since 2020/7/16
+     */
     private void createPositionImageWatermark(PdfCanvas over, ImageData watermarkImageData, PositionWatermarkStyle positionWatermarkStyle,
                                               float pageWidth, float pageHeight, float watermarkWidth, float watermarkHeight) {
         for (PositionWatermarkStyle.Position position : positionWatermarkStyle.getPositions()) {
@@ -226,7 +275,17 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
         }
     }
 
-    // pdf文档的原点在左下角，图片水印的原点在左下角
+    /**
+     * 添加重复的图片水印（PDF 文档的原点在左下角，图片水印的原点在左下角）
+     *
+     * @param over                 水印画布
+     * @param watermarkImageData   水印图片
+     * @param repeatWatermarkStyle 重复水印样式
+     * @param watermarkWidth       水印宽度
+     * @param watermarkHeight      水印高度
+     * @author lihaitao
+     * @since 2020/7/16
+     */
     private void createRepeatImageWatermark(PdfCanvas over, ImageData watermarkImageData, RepeatWatermarkStyle repeatWatermarkStyle,
                                             float watermarkWidth, float watermarkHeight) {
         for (int row = -3; row < repeatWatermarkStyle.getRows(); row++) {
