@@ -3,17 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.agile</groupId>
     <artifactId>watermark</artifactId>
     <version>1.0</version>
-
     <properties>
-        <itext.version>7.1.11</itext.version>
         <poi.version>4.1.2</poi.version>
-        <zxing.version>3.4.0</zxing.version>
+        <poi-ooxml-schemas.version>1.4</poi-ooxml-schemas.version>
+        <poi-ooxml-security.version>1.1</poi-ooxml-security.version>
+        <itext.version>7.1.11</itext.version>
+        <hutool.version>5.3.9</hutool.version>
+        <lombok.version>1.18.0</lombok.version>
+        <junit.version>5.6.2</junit.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -44,17 +45,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>ooxml-schemas</artifactId>
-            <version>1.4</version>
+            <version>${poi-ooxml-schemas.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>ooxml-security</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.0</version>
+            <version>${poi-ooxml-security.version}</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -63,30 +59,22 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>${zxing.version}</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>${zxing.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.3.9</version>
-        </dependency>
-
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -99,6 +87,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- 打包源码插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -115,5 +104,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -1,7 +1,7 @@
 package com.agile.watermark.model;
 
+import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.agile.watermark.exception.WatermarkException;
-import com.agile.watermark.util.QRCodeUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,7 +59,7 @@ public class QRCodeWatermark extends ImageWatermark {
      */
     private void init(String content, int width, int height) {
         try (ByteArrayOutputStream qrCodeOutputStream = new ByteArrayOutputStream()) {
-            QRCodeUtils.encode(content, width, height, qrCodeOutputStream);
+            QrCodeUtil.generate(content, width, height, Type.PNG.toString(), qrCodeOutputStream);
             ByteArrayInputStream qrCodeInputStream = new ByteArrayInputStream(qrCodeOutputStream.toByteArray());
             super.setImageStream(qrCodeInputStream);
             super.setWidth(width);

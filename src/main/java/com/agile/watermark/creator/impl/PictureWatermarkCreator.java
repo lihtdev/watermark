@@ -18,12 +18,21 @@ import java.io.OutputStream;
  * @author lihaitao
  * @since 2020/7/5
  */
-public class PictureWatermarkCreatorImpl implements WatermarkCreator {
+public class PictureWatermarkCreator implements WatermarkCreator {
 
+    /**
+     * 原文件输入流
+     */
     private InputStream inputStream;
 
+    /**
+     * 添加水印后的文件输出流
+     */
     private OutputStream outputStream;
 
+    /**
+     * 图片水印输入流
+     */
     private InputStream imageStream;
 
     /**

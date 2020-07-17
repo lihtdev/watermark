@@ -33,7 +33,7 @@ import java.io.OutputStream;
  * @author lihaitao
  * @since 2020/7/5
  */
-public class PdfWatermarkCreatorImpl implements WatermarkCreator {
+public class PdfWatermarkCreator implements WatermarkCreator {
 
     /**
      * 固定位置水印边距
@@ -79,6 +79,7 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
     private void setTextWatermark(TextWatermark textWatermark) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(inputStream), new PdfWriter(outputStream));
         this.doc = new Document(pdfDoc);
+
         int pages = pdfDoc.getNumberOfPages();
         PdfFont font = FontUtils.getPdfFont(textWatermark.getFontFamily());
         DeviceRgb deviceRgb = new DeviceRgb(textWatermark.getAwtColor());
@@ -104,11 +105,12 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
             PdfCanvas over = new PdfCanvas(pdfPage);
             over.saveState();
             over.setExtGState(extGState);
-            over.concatMatrix(AffineTransform.getRotateInstance(rotation));
             WatermarkStyle watermarkStyle = textWatermark.getStyle();
             if (watermarkStyle instanceof PositionWatermarkStyle) {
                 createPositionTextWatermark(paragraph, (PositionWatermarkStyle) watermarkStyle, pageNumber, pageWidth, pageHeight);
             } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
+                // 设置旋转度，只有重复水印支持旋转，其他类型水印旋转后样式不好
+                over.concatMatrix(AffineTransform.getRotateInstance(rotation));
                 createRepeatTextWatermark(paragraph, (RepeatWatermarkStyle) watermarkStyle, pageNumber, watermarkWidth, watermarkHeight);
             }
             over.restoreState();
@@ -123,10 +125,10 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
      * @since 2020/07/16
      */
     private void setImageWatermark(ImageWatermark imageWatermark) throws IOException {
-        this.imageStream = imageWatermark.getImageStream();
-
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(inputStream), new PdfWriter(outputStream));
         this.doc = new Document(pdfDoc);
+        this.imageStream = imageWatermark.getImageStream();
+
         int pages = pdfDoc.getNumberOfPages();
         // image watermark
         Image watermarkImage = ImageIO.read(imageStream);
@@ -153,7 +155,7 @@ public class PdfWatermarkCreatorImpl implements WatermarkCreator {
             if (watermarkStyle instanceof PositionWatermarkStyle) {
                 createPositionImageWatermark(over, watermarkImageData, (PositionWatermarkStyle) watermarkStyle, pageWidth, pageHeight, watermarkWidth, watermarkHeight);
             } else if (watermarkStyle instanceof RepeatWatermarkStyle) {
-                // 设置旋转度
+                // 设置旋转度，只有重复水印支持旋转，其他类型水印旋转后样式不好
                 over.concatMatrix(AffineTransform.getRotateInstance(rotation));
                 createRepeatImageWatermark(over, watermarkImageData, (RepeatWatermarkStyle) watermarkStyle, watermarkWidth, watermarkHeight);
             }

@@ -33,8 +33,8 @@ public class ExcelWatermarkTests {
         watermark.setColor("red");
         watermark.setStyle(watermarkStyle);
 
-        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.docx");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.docx")) {
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xls");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xls")) {
             WatermarkUtils.setWatermarkForExcel(inputStream, outputStream, watermark);
         }
     }
@@ -53,8 +53,8 @@ public class ExcelWatermarkTests {
         watermark.setColor("green");
         watermark.setStyle(watermarkStyle);
 
-        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.docx");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.docx")) {
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xls");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xls")) {
             WatermarkUtils.setWatermarkForExcel(inputStream, outputStream, watermark);
         }
 
@@ -66,8 +66,8 @@ public class ExcelWatermarkTests {
     @Test
     public void testSetImageWatermark() throws IOException {
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
-             InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.docx");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.docx")) {
+             InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xlsx");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xlsx")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(300);

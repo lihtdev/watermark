@@ -13,7 +13,7 @@ import java.io.OutputStream;
  * @author lihaitao
  * @since 2020/7/5
  */
-public class PPTWatermarkCreatorImpl implements WatermarkCreator {
+public class PPTWatermarkCreator implements WatermarkCreator {
 
     @Override
     public void create(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {

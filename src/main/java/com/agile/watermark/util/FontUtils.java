@@ -29,8 +29,14 @@ public class FontUtils {
      */
     private static final String BASE_FONT_PATH = "font-chinese/";
 
+    /**
+     * Java 字体对象缓存
+     */
     private static final Map<String, Font> fontMap = new ConcurrentHashMap<>();
 
+    /**
+     * PDF 字体对象缓存
+     */
     private static final Map<String, PdfFont> pdfFontMap = new ConcurrentHashMap<>();
 
     /**

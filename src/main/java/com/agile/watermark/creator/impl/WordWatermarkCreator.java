@@ -41,7 +41,7 @@ import java.util.List;
  * @author lihaitao
  * @since 2020/7/4
  */
-public class WordWatermarkCreatorImpl implements WatermarkCreator {
+public class WordWatermarkCreator implements WatermarkCreator {
 
     /**
      * 旋转度数参数比例
@@ -58,10 +58,19 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
      */
     private static final int CONTRAST = -70001;
 
+    /**
+     * 原文件输入流
+     */
     private InputStream inputStream;
 
+    /**
+     * 图片水印输入流
+     */
     private InputStream imageStream;
 
+    /**
+     * .docx 文档对象
+     */
     private XWPFDocument doc;
 
     /**
@@ -415,8 +424,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
                 return Document.PICTURE_TYPE_WMF;
             case PICT:
                 return Document.PICTURE_TYPE_PICT;
-            case PNG:
-                return Document.PICTURE_TYPE_PNG;
+            case JPEG:
+                return Document.PICTURE_TYPE_JPEG;
             case DIB:
                 return Document.PICTURE_TYPE_DIB;
             case GIF:
@@ -430,8 +439,8 @@ public class WordWatermarkCreatorImpl implements WatermarkCreator {
             case WPG:
                 return Document.PICTURE_TYPE_WPG;
             default:
-                // 默认为 jpeg 格式
-                return Document.PICTURE_TYPE_JPEG;
+                // 默认为 png 格式
+                return Document.PICTURE_TYPE_PNG;
         }
     }
 

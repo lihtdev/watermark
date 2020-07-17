@@ -26,7 +26,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForWord(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new WordWatermarkCreatorImpl()) {
+        try (WatermarkCreator watermarkCreator = new WordWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }
@@ -41,7 +41,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForExcel(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new ExcelWatermarkCreatorImpl()) {
+        try (WatermarkCreator watermarkCreator = new ExcelWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }
@@ -56,7 +56,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForPPT(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new PPTWatermarkCreatorImpl()) {
+        try (WatermarkCreator watermarkCreator = new PPTWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }
@@ -71,7 +71,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForPdf(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new PdfWatermarkCreatorImpl()) {
+        try (WatermarkCreator watermarkCreator = new PdfWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }
@@ -86,7 +86,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForPicture(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new PictureWatermarkCreatorImpl()) {
+        try (WatermarkCreator watermarkCreator = new PictureWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }

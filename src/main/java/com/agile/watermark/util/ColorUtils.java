@@ -49,4 +49,16 @@ public class ColorUtils {
         }
     }
 
+    /**
+     * 将普通颜色换为透明色
+     *
+     * @param color 颜色
+     * @param alpha 透明度
+     * @author lihaitao
+     * @since 2020/7/17
+     */
+    public static Color toAlphaColor(Color color, int alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    }
+
 }

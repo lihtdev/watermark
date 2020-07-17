@@ -103,8 +103,6 @@ public class PdfWatermarkTests {
             watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
             watermarkStyle.setXSpace(50);
             watermarkStyle.setYSpace(50);
-            /*watermarkStyle.setXStart(-200);
-            watermarkStyle.setYStart(-200);*/
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(230);
