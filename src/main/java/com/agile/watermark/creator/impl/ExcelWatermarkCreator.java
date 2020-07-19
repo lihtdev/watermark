@@ -9,17 +9,17 @@ import com.agile.watermark.model.*;
 import com.agile.watermark.util.ColorUtils;
 import com.agile.watermark.util.FontUtils;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.POIDocument;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.*;
-import org.apache.poi.xwpf.usermodel.Document;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * 给 Excel 文件添加水印
@@ -145,15 +145,15 @@ public class ExcelWatermarkCreator implements WatermarkCreator {
         graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermarkStyle.getOpacity()));
         graphics.dispose();
-        Color transparentColor = new Color(255, 255, 255, 0);
-        GraphicsUtil.createGraphics(bufferedImage, transparentColor);
+        Color argbColor = new Color(255, 255, 255, 0);
+        GraphicsUtil.createGraphics(bufferedImage, argbColor);
     }
 
     private static BufferedImage createTextImage(TextWatermark textWatermark) {
         java.awt.Font font = FontUtils.getFont(textWatermark.getFontFamily(), java.awt.Font.BOLD, textWatermark.getFontSize());
-//        ColorUtils.toAlphaColor(textWatermark.getAwtColor(), textWatermark.getStyle().getOpacity());
-        return ImgUtil.createImage(textWatermark.getText(), font, null,
-                textWatermark.getAwtColor(), BufferedImage.TYPE_INT_ARGB);
+        int alpha = Math.round(255 * textWatermark.getStyle().getOpacity());
+        Color color = ColorUtils.toArgbColor(textWatermark.getAwtColor(), alpha);
+        return ImgUtil.createImage(textWatermark.getText(), font, null, color, BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
@@ -193,19 +193,6 @@ public class ExcelWatermarkCreator implements WatermarkCreator {
             imageStream.close();
         }
         // outputStream 不需要关闭，因添加水印后要返回给调用者
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        TextWatermark textWatermark = new TextWatermark();
-        textWatermark.setFontSize(20);
-        textWatermark.setFontFamily("楷体");
-        textWatermark.setColor("red");
-        textWatermark.setText("禁止复制");
-        BufferedImage textImage = createTextImage(textWatermark);
-//        WatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-//        watermarkStyle.setOpacity(0.5f);
-//        setImageWatermarkStyle(textImage, watermarkStyle);
-        ImgUtil.write(textImage, "png", new FileOutputStream("c:/temp/watermark.png"));
     }
 
 }

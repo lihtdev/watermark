@@ -57,7 +57,7 @@ public class ColorUtils {
      * @author lihaitao
      * @since 2020/7/17
      */
-    public static Color toAlphaColor(Color color, int alpha) {
+    public static Color toArgbColor(Color color, int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     }
 
