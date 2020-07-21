@@ -26,7 +26,7 @@ public class WatermarkUtils {
      * @since 2020/7/3
      */
     public static void setWatermarkForWord(InputStream inputStream, OutputStream outputStream, Watermark watermark) throws IOException {
-        try (WatermarkCreator watermarkCreator = new WordWatermarkCreator()) {
+        try (WatermarkCreator watermarkCreator = new WordLayerWatermarkCreator()) {
             watermarkCreator.create(inputStream, outputStream, watermark);
         }
     }

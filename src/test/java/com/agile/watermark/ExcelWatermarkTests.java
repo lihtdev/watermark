@@ -50,7 +50,7 @@ public class ExcelWatermarkTests {
         TextWatermark watermark = new TextWatermark();
         watermark.setText("禁止复制");
         watermark.setFontFamily("楷体");
-        watermark.setColor("green");
+        watermark.setColor("red");
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xls");
@@ -61,17 +61,49 @@ public class ExcelWatermarkTests {
     }
 
     /**
-     * 添加图片水印
+     * 添加固定位置的图片水印
      */
     @Test
-    public void testSetImageWatermark() throws IOException {
+    public void testSetPositionImageWatermark() throws IOException {
+        PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+        watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{
+                PositionWatermarkStyle.Position.LEFT_BOTTOM, PositionWatermarkStyle.Position.LEFT_TOP,
+                PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
+                PositionWatermarkStyle.Position.CENTER});
+        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
-             InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xlsx");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xlsx")) {
+             InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xls");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xls")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
-            watermark.setWidth(300);
-            watermark.setHeight(200);
+            watermark.setWidth(230);
+            watermark.setHeight(68);
+            watermark.setStyle(watermarkStyle);
+
+            WatermarkUtils.setWatermarkForExcel(inputStream, outputStream, watermark);
+        }
+    }
+
+    /**
+     * 添加重复的图片水印
+     */
+    @Test
+    public void testSetRepeatImageWatermark() throws IOException {
+        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+        watermarkStyle.setOpacity(0.5f);
+        watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+        watermarkStyle.setXSpace(50);
+        watermarkStyle.setYSpace(50);
+
+        try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
+             InputStream inputStream = new FileInputStream(BASE_PATH + "/excel.xls");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/excel-watermark.xls")) {
+
+            ImageWatermark watermark = new ImageWatermark(imageStream);
+            watermark.setWidth(230);
+            watermark.setHeight(68);
+            watermark.setStyle(watermarkStyle);
 
             WatermarkUtils.setWatermarkForExcel(inputStream, outputStream, watermark);
         }

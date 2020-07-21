@@ -69,16 +69,16 @@ public class PdfWatermarkTests {
      */
     @Test
     public void testSetPositionImageWatermark() throws IOException {
+        PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+        watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{
+                PositionWatermarkStyle.Position.LEFT_BOTTOM, PositionWatermarkStyle.Position.LEFT_TOP,
+                PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
+                PositionWatermarkStyle.Position.CENTER});
+        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
              OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
-
-            PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
-            watermarkStyle.setPositions(new PositionWatermarkStyle.Position[]{
-                    PositionWatermarkStyle.Position.LEFT_BOTTOM, PositionWatermarkStyle.Position.LEFT_TOP,
-                    PositionWatermarkStyle.Position.RIGHT_BOTTOM, PositionWatermarkStyle.Position.RIGHT_TOP,
-                    PositionWatermarkStyle.Position.CENTER});
-            watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(230);
@@ -94,15 +94,15 @@ public class PdfWatermarkTests {
      */
     @Test
     public void testSetRepeatImageWatermark() throws IOException {
+        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+        watermarkStyle.setOpacity(0.5f);
+        watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+        watermarkStyle.setXSpace(50);
+        watermarkStyle.setYSpace(50);
+
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
              OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
-
-            RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
-            watermarkStyle.setOpacity(0.5f);
-            watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
-            watermarkStyle.setXSpace(50);
-            watermarkStyle.setYSpace(50);
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(230);
