@@ -18,9 +18,8 @@ import java.io.OutputStream;
 
 /**
  * 给 Excel 文件添加水印
- * <p>
- * TODO Excel不支持固定位置水印
- * TODO
+ *
+ * TODO 该类存在以下问题：水印位置尚未调整好
  *
  * @author lihaitao
  * @since 2020/7/5

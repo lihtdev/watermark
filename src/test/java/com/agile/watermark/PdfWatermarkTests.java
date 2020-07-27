@@ -36,7 +36,7 @@ public class PdfWatermarkTests {
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-text-watermark.pdf")) {
             WatermarkUtils.setWatermarkForPdf(inputStream, outputStream, watermark);
         }
     }
@@ -58,7 +58,7 @@ public class PdfWatermarkTests {
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-text-watermark.pdf")) {
             WatermarkUtils.setWatermarkForPdf(inputStream, outputStream, watermark);
         }
 
@@ -78,7 +78,7 @@ public class PdfWatermarkTests {
 
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-image-watermark.pdf")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(230);
@@ -102,13 +102,47 @@ public class PdfWatermarkTests {
 
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/pdf-watermark.pdf")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-image-watermark.pdf")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(230);
             watermark.setHeight(68);
             watermark.setStyle(watermarkStyle);
 
+            WatermarkUtils.setWatermarkForPdf(inputStream, outputStream, watermark);
+        }
+    }
+
+    /**
+     * 添加固定位置的二维码水印
+     */
+    @Test
+    public void testSetPositionQRCodeWatermark() throws IOException {
+        PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
+        watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
+
+        QRCodeWatermark watermark = new QRCodeWatermark("我是中国人");
+        watermark.setStyle(watermarkStyle);
+
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-qr-code-watermark.pdf")) {
+            WatermarkUtils.setWatermarkForPdf(inputStream, outputStream, watermark);
+        }
+    }
+
+    /**
+     * 添加重复的二维码水印
+     */
+    @Test
+    public void testSetRepeatQRCodeWatermark() throws IOException {
+        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+        watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+
+        QRCodeWatermark watermark = new QRCodeWatermark("我是中国人");
+        watermark.setStyle(watermarkStyle);
+
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/pdf.pdf");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-qr-code-watermark.pdf")) {
             WatermarkUtils.setWatermarkForPdf(inputStream, outputStream, watermark);
         }
     }

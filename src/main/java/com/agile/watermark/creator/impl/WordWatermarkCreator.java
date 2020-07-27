@@ -35,8 +35,11 @@ import java.util.List;
 
 /**
  * 给 Word 文档添加水印
+ * <p>
+ * 该类存在以下问题：
  * 1.只支持 .docx 文件，暂不支持 .doc 文件
- * 2.图片水印暂不支持重复
+ * 2.TODO 实现固定位置和重复的图片水印
+ * 3.TODO 固定位置的文本水印需要增加外边距
  *
  * @author lihaitao
  * @since 2020/7/4
@@ -123,7 +126,6 @@ public class WordWatermarkCreator implements WatermarkCreator {
 
     /**
      * 设置图片水印
-     * TODO 实现固定位置和重复的图片水印
      *
      * @param imageWatermark 图片水印
      * @author lihaitao
@@ -192,7 +194,6 @@ public class WordWatermarkCreator implements WatermarkCreator {
 
     /**
      * 获取固定位置的文本水印样式
-     * TODO 固定位置的文本水印增加外边距
      *
      * @param textWatermark 文字水印
      * @param index         水印索引

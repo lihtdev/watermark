@@ -1,7 +1,7 @@
 package com.agile.watermark.util;
 
 /**
- * 图片工具类
+ * 文本工具类
  *
  * @author lihaitao
  * @since 2020/07/14

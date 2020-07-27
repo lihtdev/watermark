@@ -37,7 +37,7 @@ public class PictureWatermarkTests {
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-text-watermark.png")) {
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }
     }
@@ -59,7 +59,7 @@ public class PictureWatermarkTests {
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-text-watermark.png")) {
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }
 
@@ -79,7 +79,7 @@ public class PictureWatermarkTests {
 
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.png");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-image-watermark.png")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(430);
@@ -101,7 +101,7 @@ public class PictureWatermarkTests {
 
         try (InputStream imageStream = new FileInputStream(BASE_PATH + "/watermark.jpg");
              InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.jpg");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.jpg")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-image-watermark.jpg")) {
 
             ImageWatermark watermark = new ImageWatermark(imageStream);
             watermark.setWidth(200);
@@ -113,10 +113,10 @@ public class PictureWatermarkTests {
     }
 
     /**
-     * 添加二维码水印
+     * 添加固定位置的二维码水印
      */
     @Test
-    public void testSetQRCodeWatermark() throws IOException {
+    public void testSetPositionQRCodeWatermark() throws IOException {
         PositionWatermarkStyle watermarkStyle = new PositionWatermarkStyle();
         watermarkStyle.setFormat(WatermarkStyle.Format.HORIZONTAL);
 
@@ -124,7 +124,24 @@ public class PictureWatermarkTests {
         watermark.setStyle(watermarkStyle);
 
         try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
-             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/picture-watermark.png")) {
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/position-qr-code-watermark.png")) {
+            WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
+        }
+    }
+
+    /**
+     * 添加重复的二维码水印
+     */
+    @Test
+    public void testSetRepeatQRCodeWatermark() throws IOException {
+        RepeatWatermarkStyle watermarkStyle = new RepeatWatermarkStyle();
+        watermarkStyle.setFormat(WatermarkStyle.Format.OBLIQUE);
+
+        QRCodeWatermark watermark = new QRCodeWatermark("我是中国人");
+        watermark.setStyle(watermarkStyle);
+
+        try (InputStream inputStream = new FileInputStream(BASE_PATH + "/picture.png");
+             OutputStream outputStream = new FileOutputStream(BASE_PATH + "/repeat-qr-code-watermark.png")) {
             WatermarkUtils.setWatermarkForPicture(inputStream, outputStream, watermark);
         }
     }

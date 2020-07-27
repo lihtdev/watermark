@@ -61,7 +61,6 @@ public class WordWatermarkTests {
              OutputStream outputStream = new FileOutputStream(BASE_PATH + "/word-watermark.docx")) {
             WatermarkUtils.setWatermarkForWord(inputStream, outputStream, watermark);
         }
-
     }
 
     /**
