@@ -35,11 +35,6 @@ public class FontUtils {
     private static final Map<String, Font> fontMap = new ConcurrentHashMap<>();
 
     /**
-     * PDF 字体对象缓存
-     */
-    private static final Map<String, PdfFont> pdfFontMap = new ConcurrentHashMap<>();
-
-    /**
      * 获取Java字体对象
      *
      * @param fontName  字体名
@@ -64,7 +59,7 @@ public class FontUtils {
      * @since 2020/7/12
      */
     public static PdfFont getPdfFont(String fontName) {
-        PdfFont pdfFont = pdfFontMap.get(fontName);
+        PdfFont pdfFont = getPdfFontFromResource(fontName);
         if (pdfFont == null) {
             try {
                 return PdfFontFactory.createFont(fontName, PdfEncodings.IDENTITY_H, true);
@@ -78,20 +73,28 @@ public class FontUtils {
     /*
      * 从 resource 加载中文字体文件
      */
+    private static PdfFont getPdfFontFromResource(String fontName) {
+        ChineseFont chineseFont = ChineseFont.values()[0].getChineseFontByFontName(fontName);
+        try (InputStream resourceStream = ResourceUtil.getResourceStream(BASE_FONT_PATH + chineseFont.getFileName())) {
+            byte[] fontBytes = StreamUtil.inputStreamToArray(resourceStream);
+            if (chineseFont.isTtc()) {
+                return PdfFontFactory.createTtcFont(fontBytes, 0, PdfEncodings.IDENTITY_H, true, true);
+            } else {
+                return PdfFontFactory.createFont(fontBytes, PdfEncodings.IDENTITY_H, true);
+            }
+        } catch (IOException e) {
+            throw new WatermarkException("加载中文字体失败", e);
+        }
+    }
+
+    /*
+     * 从 resource 加载中文字体文件
+     */
     static {
         ChineseFont[] chineseFonts = ChineseFont.values();
         Arrays.stream(chineseFonts).forEach(chineseFont -> {
             try (InputStream resourceStream = ResourceUtil.getResourceStream(BASE_FONT_PATH + chineseFont.getFileName())) {
                 byte[] fontBytes = StreamUtil.inputStreamToArray(resourceStream);
-                PdfFont pdfFont;
-                if (chineseFont.isTtc()) {
-                    pdfFont = PdfFontFactory.createTtcFont(fontBytes, 0, PdfEncodings.IDENTITY_H, true, true);
-                } else {
-                    pdfFont = PdfFontFactory.createFont(fontBytes, PdfEncodings.IDENTITY_H, true);
-                }
-                if (pdfFont != null) {
-                    pdfFontMap.put(chineseFont.getFontName(), pdfFont);
-                }
                 ByteArrayInputStream fontByteArrayInputStream = new ByteArrayInputStream(fontBytes);
                 Font font = Font.createFont(Font.TRUETYPE_FONT, fontByteArrayInputStream);
                 fontMap.put(chineseFont.getFontName(), font);
